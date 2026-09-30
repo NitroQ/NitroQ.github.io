@@ -1,0 +1,112 @@
+{
+	"bea": {
+		"stars": 0,
+		"language": "Rust",
+		"topics": [
+			"meeting",
+			"meeting-assistant",
+			"meeting-intelligence",
+			"meeting-minutes",
+			"meeting-notes",
+			"meeting-recorder",
+			"meeting-transcription",
+			"meetingmanager",
+			"meetings"
+		],
+		"pushedAt": "2026-09-28T06:07:27Z",
+		"openIssues": 0,
+		"license": "AGPL-3.0"
+	},
+	"CodeJuanCMS": {
+		"stars": 1,
+		"language": "Blade",
+		"topics": [
+			"cms",
+			"disaster-evacuation",
+			"disaster-management"
+		],
+		"pushedAt": "2022-05-14T13:32:15Z",
+		"openIssues": 0,
+		"license": null
+	},
+	"grocerysystem": {
+		"stars": 1,
+		"language": "Java",
+		"topics": [
+			"admin-dashboard",
+			"hris",
+			"inventory-management-system",
+			"point-of-sale"
+		],
+		"pushedAt": "2022-11-07T04:50:02Z",
+		"openIssues": 2,
+		"license": null
+	},
+	"inTrack": {
+		"stars": 0,
+		"language": "Java",
+		"topics": [
+			"daily-time-record",
+			"localized-data"
+		],
+		"pushedAt": "2022-03-31T13:33:39Z",
+		"openIssues": 3,
+		"license": null
+	},
+	"Nibs-Knobs": {
+		"stars": 0,
+		"language": "TypeScript",
+		"topics": [
+			"angular",
+			"blog",
+			"inquiry-portal",
+			"interior-design",
+			"school-project"
+		],
+		"pushedAt": "2022-11-18T07:05:35Z",
+		"openIssues": 0,
+		"license": null
+	},
+	"nu-wave": {
+		"stars": 0,
+		"language": "Blade",
+		"topics": [
+			"blog-engine",
+			"news",
+			"school-project",
+			"website"
+		],
+		"pushedAt": "2023-01-05T09:30:05Z",
+		"openIssues": 0,
+		"license": null
+	},
+	"openrouter-usage-widget": {
+		"stars": 0,
+		"language": "Rust",
+		"topics": [],
+		"pushedAt": "2026-09-01T04:58:27Z",
+		"openIssues": 0,
+		"license": "AGPL-3.0"
+	},
+	"Plantita": {
+		"stars": 1,
+		"language": "PHP",
+		"topics": [],
+		"pushedAt": "2023-11-23T03:30:39Z",
+		"openIssues": 0,
+		"license": null
+	},
+	"SalonWebsite": {
+		"stars": 1,
+		"language": "PHP",
+		"topics": [
+			"booking-system",
+			"cms",
+			"content-management-system",
+			"laravel"
+		],
+		"pushedAt": "2022-03-25T03:36:54Z",
+		"openIssues": 0,
+		"license": null
+	}
+}

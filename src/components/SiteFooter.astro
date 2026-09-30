@@ -1,0 +1,80 @@
+---
+import { SITE, withBase } from '../lib/site';
+import PixelSprite from './PixelSprite.astro';
+import Marquee from './Marquee.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t-2 border-line bg-ink-2">
+	<Marquee />
+
+	<div class="shell grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr]">
+		<div>
+			<PixelSprite name="crab" size={40} class="bob mb-5" />
+			<p class="display text-[clamp(1.6rem,5vw,2.4rem)] leading-none">
+				FRANK<br />
+				<span class="text-hot">GESMUNDO</span>
+			</p>
+			<p class="lede muted mt-5 max-w-xs">
+				{SITE.role}. Building offline-first tools that keep your data on your
+				machine.
+			</p>
+		</div>
+
+		<nav aria-label="Footer">
+			<h2 class="eyebrow mb-4">Cabinet</h2>
+			<ul class="space-y-2">
+				{
+					SITE.nav.map((item) => (
+						<li>
+							<a
+								href={withBase(item.href)}
+								class="font-mono text-sm text-dim transition-colors hover:text-amber"
+							>
+								{item.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<div>
+			<h2 class="eyebrow mb-4">Link</h2>
+			<ul class="space-y-2">
+				{
+					SITE.social.map((item) => (
+						<li>
+							<a
+								href={item.href}
+								target="_blank"
+								rel="me noopener noreferrer"
+								class="group inline-flex items-center gap-2 font-mono text-sm text-dim transition-colors hover:text-amber"
+							>
+								{item.label}
+								<span class="text-line-2 transition-colors group-hover:text-amber">
+									↗
+								</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</div>
+
+	<div class="border-t-2 border-line">
+		<div
+			class="shell flex flex-col gap-3 py-6 font-mono text-[11px] text-dim sm:flex-row sm:items-center sm:justify-between"
+		>
+			<p>© {year} {SITE.title}. No rights reserved, no cookies.</p>
+			<p class="flex items-center gap-2">
+				<span class="text-phos">■</span>
+				Astro + GitHub Pages
+				<span class="text-line-2">/</span>
+				<span class="text-amber">$0 per month</span>
+			</p>
+		</div>
+	</div>
+</footer>

@@ -1,0 +1,39 @@
+---
+import { SPRITES } from '../lib/sprites';
+
+interface Props {
+	name: string;
+	/** Rendered size in px. Omit to let CSS size the sprite. */
+	size?: number;
+	title?: string;
+	class?: string;
+}
+
+const { name, size, title, class: className } = Astro.props;
+const sprite = SPRITES[name] ?? SPRITES.chip!;
+
+const height = sprite.rows.length;
+const width = sprite.rows[0]!.length;
+
+const cells = sprite.rows.flatMap((row, y) =>
+	[...row].flatMap((ch, x) => {
+		const fill = sprite.palette[ch];
+		return fill ? [{ x, y, fill }] : [];
+	}),
+);
+---
+
+<svg
+	viewBox={`0 0 ${width} ${height}`}
+	width={size}
+	height={size ? Math.round((size / width) * height) : undefined}
+	class={className}
+	shape-rendering="crispEdges"
+	role={title ? 'img' : undefined}
+	aria-label={title}
+	aria-hidden={title ? undefined : 'true'}
+	focusable="false"
+>
+	{title && <title>{title}</title>}
+	{cells.map((c) => <rect x={c.x} y={c.y} width="1" height="1" fill={c.fill} />)}
+</svg>

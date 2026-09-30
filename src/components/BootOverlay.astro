@@ -1,0 +1,20 @@
+---
+/**
+ * The cabinet powering on. Removed by `initArcade()` once the ROM finishes
+ * loading — the <noscript> rule in BaseLayout hides it if JS never arrives.
+ */
+---
+
+<div class="boot" data-boot>
+	<div class="flex w-full max-w-sm flex-col items-center gap-5 px-6">
+		<p class="display text-[10px] tracking-[0.3em] text-dim">NITROQ SYSTEM</p>
+
+		<div class="boot__bar">
+			<div class="boot__fill" data-boot-fill></div>
+		</div>
+
+		<p class="font-mono text-[11px] tracking-[0.12em] text-phos" data-boot-status>
+			MOUNTING /dev/rom0
+		</p>
+	</div>
+</div>

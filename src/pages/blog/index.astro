@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostRow from '../../components/PostRow.astro';
+import { withBase } from '../../lib/site';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+
+const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+---
+
+<BaseLayout
+	title="Blog"
+	description="Notes on local-first architecture, Rust and Tauri, Laravel, and the business of building software that respects its users."
+>
+	<section class="border-b-2 border-line bg-ink-2">
+		<div class="shell py-16">
+			<p class="eyebrow" data-reveal data-enter>HIGH SCORE TABLE</p>
+			<h1
+				class="display mt-4 text-[clamp(2.2rem,9vw,4.5rem)]"
+				aria-label="Notebook"
+				data-reveal
+				data-enter
+			>
+				<span data-decode data-text="NOTEBOOK" aria-hidden="true">NOTEBOOK</span>
+			</h1>
+			<p class="lede muted mt-6 max-w-2xl" data-reveal data-enter>
+				{posts.length} entries. Mostly about architecture decisions I got wrong
+				first and the local-first obsession that keeps following me around.
+			</p>
+
+			<ul class="mt-10 flex flex-wrap gap-2" data-reveal data-enter>
+				{tags.map((tag) => <li class="chip chip-accent">#{tag}</li>)}
+			</ul>
+		</div>
+	</section>
+
+	<section class="shell py-16">
+		<div class="border-t-2 border-line" data-reveal>
+			{posts.map((post, i) => <PostRow post={post} rank={i + 1} />)}
+		</div>
+	</section>
+
+	<section class="shell pb-8">
+		<div class="panel flex flex-wrap items-center justify-between gap-6 p-8" data-reveal>
+			<div>
+				<h2 class="display text-lg">FOLLOW VIA RSS</h2>
+				<p class="muted mt-2 text-sm">
+					No newsletter, no tracking pixel, no algorithm. Just an Atom feed
+					that has worked since day one.
+				</p>
+			</div>
+			<a href={withBase('/rss.xml')} class="btn btn-primary">
+				rss.xml
+			</a>
+		</div>
+	</section>
+</BaseLayout>

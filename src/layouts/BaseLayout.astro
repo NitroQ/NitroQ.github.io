@@ -1,0 +1,135 @@
+---
+import '@fontsource/silkscreen/400.css';
+import '@fontsource/silkscreen/700.css';
+import '@fontsource-variable/pixelify-sans';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+
+import { getCollection } from 'astro:content';
+import { SITE, withBase, type PaletteItem } from '../lib/site';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import BootOverlay from '../components/BootOverlay.astro';
+import CommandPalette from '../components/CommandPalette.astro';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title, description = SITE.description } = Astro.props;
+
+const pageTitle = title
+	? `${title} // ${SITE.shortTitle}`
+	: `${SITE.title} — ${SITE.role}`;
+
+const canonical = Astro.site
+	? new URL(Astro.url.pathname, Astro.site)
+	: Astro.url;
+
+const [projects, posts] = await Promise.all([
+	getCollection('projects'),
+	getCollection('blog', ({ data }) => !data.draft),
+]);
+
+const palette: PaletteItem[] = [
+	...SITE.nav.map((item) => ({
+		label: item.label,
+		href: withBase(item.href),
+		group: 'GO',
+	})),
+	...[...projects]
+		.sort((a, b) => a.data.order - b.data.order)
+		.map((p) => ({
+			label: p.data.title,
+			href: withBase(`/projects/${p.id}/`),
+			group: 'PROJECT',
+		})),
+	...[...posts]
+		.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+		.map((p) => ({
+			label: p.data.title,
+			href: withBase(`/blog/${p.id}/`),
+			group: 'POST',
+			meta: p.data.pubDate.getFullYear().toString(),
+		})),
+];
+---
+
+<!doctype html>
+<html lang="en" data-crt="on">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{pageTitle}</title>
+		<meta name="description" content={description} />
+		<meta name="author" content={SITE.title} />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="theme-color" content="#06060b" />
+		<link rel="canonical" href={canonical} />
+
+		<link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+		<link
+			rel="alternate"
+			type="application/rss+xml"
+			title={`${SITE.title} — blog`}
+			href={withBase('/rss.xml')}
+		/>
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={SITE.shortTitle} />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta
+			property="og:image"
+			content={new URL(withBase('/og.jpg'), Astro.site ?? Astro.url)}
+		/>
+		<meta name="twitter:card" content="summary_large_image" />
+
+		<noscript>
+			<style>
+				[data-boot] { display: none !important; }
+			</style>
+		</noscript>
+
+		<!-- Parks [data-reveal] elements before first paint so the scroll
+		     animations have something to animate from. No JS, no hidden content. -->
+		<script is:inline>
+			document.documentElement.classList.add('js-motion');
+		</script>
+	</head>
+
+	<body class="crt flex min-h-dvh flex-col">
+		<BootOverlay />
+
+		<!-- Phosphor line that sweeps the screen once the ROM is loaded. -->
+		<div
+			data-sweep
+			aria-hidden="true"
+			class="pointer-events-none fixed inset-x-0 top-0 z-[70] h-[3px] bg-phos opacity-0 shadow-[0_0_14px_3px_rgba(76,255,145,0.55)]"
+		>
+		</div>
+
+		<a
+			href="#main"
+			class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[80] focus:border-2 focus:border-amber focus:bg-ink-3 focus:px-4 focus:py-2 focus:font-display focus:text-xs"
+		>
+			SKIP TO CONTENT
+		</a>
+
+		<SiteHeader />
+
+		<main id="main" class="flex-1">
+			<slot />
+		</main>
+
+		<SiteFooter />
+		<CommandPalette items={palette} />
+
+		<script>
+			import { initArcade } from '../lib/motion';
+			initArcade();
+		</script>
+	</body>
+</html>

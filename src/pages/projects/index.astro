@@ -1,0 +1,98 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import PixelSprite from '../../components/PixelSprite.astro';
+import { withBase } from '../../lib/site';
+
+const projects = (await getCollection('projects')).sort(
+	(a, b) => a.data.order - b.data.order,
+);
+
+const GROUPS = [
+	{ status: 'active', label: 'In development', blurb: 'Actively being built.' },
+	{ status: 'stable', label: 'Shipped', blurb: 'Done, in use, still maintained if it needs to be.' },
+	{ status: 'archived', label: 'Retired', blurb: 'Superseded — kept for the record, and for the lessons.' },
+] as const;
+
+const grouped = GROUPS.map((group) => ({
+	...group,
+	items: projects.filter((p) => p.data.status === group.status),
+})).filter((group) => group.items.length);
+---
+
+<BaseLayout
+	title="Projects"
+	description="Case studies from the projects I have built — desktop tools, Laravel platforms and everything in between."
+>
+	<section class="border-b-2 border-line bg-ink-2">
+		<div class="shell py-16">
+			<p class="eyebrow" data-reveal data-enter>SELECT SLOT</p>
+			<h1
+				class="display mt-4 text-[clamp(2.2rem,9vw,4.5rem)]"
+				aria-label="Projects"
+				data-reveal
+				data-enter
+			>
+				<span data-decode data-text="PROJECTS" aria-hidden="true">PROJECTS</span>
+			</h1>
+			<p class="lede muted mt-6 max-w-2xl" data-reveal data-enter>
+				Everything here is public. The retired ones are the more interesting
+				half — they are where the wrong turns are documented.
+			</p>
+
+			<dl class="mt-10 flex flex-wrap gap-3" data-reveal data-enter>
+				{
+					grouped.map((group) => (
+						<div class="chip">
+							<dt class="text-paper">{group.items.length}</dt>
+							<dd>{group.label}</dd>
+						</div>
+					))
+				}
+			</dl>
+		</div>
+	</section>
+
+	{
+		grouped.map((group) => (
+			<section class="shell py-16">
+				<div class="mb-8 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+					<h2 class="display text-[clamp(1.3rem,4vw,2rem)] text-amber">
+						{group.label.toUpperCase()}
+					</h2>
+					<p class="muted font-mono text-[11px]">{group.blurb}</p>
+				</div>
+
+				<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
+					{group.items.map((project) => (
+						<ProjectCard project={project} />
+					))}
+				</div>
+			</section>
+		))
+	}
+
+	<section class="shell pb-8">
+		<div class="panel flex flex-wrap items-center justify-between gap-6 p-8" data-reveal>
+			<div class="flex items-center gap-4">
+				<PixelSprite name="ghost" size={32} data-twitch />
+				<div>
+					<h2 class="display text-lg">CAN'T FIND SOMETHING?</h2>
+					<p class="muted mt-1 text-sm">
+						There are {24} public repos. The interesting ones are all listed
+						above, but the graveyard has its own archaeology.
+					</p>
+				</div>
+			</div>
+			<a
+				href="https://github.com/NitroQ?tab=repositories"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="btn btn-primary"
+			>
+				All repositories ↗
+			</a>
+		</div>
+	</section>
+</BaseLayout>

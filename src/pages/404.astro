@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PixelSprite from '../components/PixelSprite.astro';
+import { SITE, withBase } from '../lib/site';
+---
+
+<BaseLayout title="404 — Game Over" description="This page does not exist.">
+	<section class="shell flex min-h-[70vh] flex-col items-center justify-center py-20 text-center">
+		<PixelSprite name="ghost" size={72} class="bob" />
+
+		<h1
+			class="display mt-8 text-[clamp(3rem,16vw,8rem)] leading-[0.82] text-hot"
+			aria-label="Game Over"
+		>
+			<span
+				class="block"
+				data-reveal
+				data-enter
+				data-decode
+				data-text="GAME"
+				aria-hidden="true">GAME</span
+			>
+			<span
+				class="block"
+				data-reveal
+				data-enter
+				data-decode
+				data-text="OVER"
+				aria-hidden="true">OVER</span
+			>
+		</h1>
+
+		<p class="lede muted mt-8 max-w-md">
+			There is nothing at this address. The level does not exist — but you still
+			get the continue screen.
+		</p>
+
+		<div class="mt-9 flex flex-wrap justify-center gap-3" data-reveal>
+			<a href={withBase('/')} class="btn btn-primary">
+				<PixelSprite name="coin" size={12} />
+				Continue
+			</a>
+			<a href={withBase('/projects/')} class="btn">Projects</a>
+			<a href={withBase('/blog/')} class="btn">Notebook</a>
+		</div>
+
+		<p class="mt-12 font-mono text-[11px] text-dim">
+			ERR_NO_LEVEL — {SITE.shortTitle}
+		</p>
+	</section>
+</BaseLayout>

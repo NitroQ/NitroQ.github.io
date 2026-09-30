@@ -1,0 +1,92 @@
+---
+import { SITE, withBase } from '../lib/site';
+import PixelSprite from './PixelSprite.astro';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+	href === '/' ? path === withBase('/') : path.startsWith(withBase(href));
+---
+
+<header
+	class="sticky top-0 z-50 border-b-2 border-line bg-ink/92 backdrop-blur-[2px]"
+>
+	<!-- Hairline scroll progress, scaled on the X axis by Motion. -->
+	<div
+		data-progress
+		class="absolute inset-x-0 -bottom-[2px] h-[2px] origin-left scale-x-0 bg-amber"
+	>
+	</div>
+
+	<div class="shell flex flex-wrap items-center gap-x-6 gap-y-3 py-3">
+		<a
+			href={withBase('/')}
+			class="group flex items-center gap-3"
+			aria-label={`${SITE.title} — home`}
+		>
+			<PixelSprite
+				name="crab"
+				size={26}
+				class="bob"
+				data-twitch
+			/>
+			<span class="display text-[13px] tracking-[0.06em] text-paper group-hover:text-amber">
+				NITROQ<span class="text-hot">.DEV</span>
+			</span>
+		</a>
+
+		<nav aria-label="Main" class="order-3 -mx-1 w-full sm:order-none sm:mx-0 sm:w-auto">
+			<ul class="flex items-center gap-1">
+				{
+					SITE.nav.map((item) => (
+						<li>
+							<a
+								href={withBase(item.href)}
+								aria-current={isActive(item.href) ? 'page' : undefined}
+								class:list={[
+									'block px-3 py-2 font-display text-[10px] tracking-[0.12em] uppercase transition-colors duration-100',
+									isActive(item.href)
+										? 'bg-amber text-ink'
+										: 'text-dim hover:bg-ink-3 hover:text-amber',
+								]}
+							>
+								{item.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<div class="ml-auto flex items-center gap-4">
+			<button
+				type="button"
+				data-crt-toggle
+				aria-pressed="true"
+				class="hidden font-mono text-[10px] tracking-[0.08em] text-dim transition-colors hover:text-amber sm:block"
+			>
+				CRT: ON
+			</button>
+
+			<button
+				type="button"
+				data-cursor-toggle
+				aria-pressed="false"
+				class="hidden font-mono text-[10px] tracking-[0.08em] text-dim transition-colors hover:text-amber lg:block"
+			>
+				CURSOR: SYSTEM
+			</button>
+
+			<button
+				type="button"
+				data-palette-open
+				aria-label="Open command palette"
+				class="btn btn-primary !px-3 !py-2"
+			>
+				<PixelSprite name="coin" size={12} />
+				<span class="sm:hidden">START</span>
+				<span class="hidden sm:inline">PRESS START</span>
+				<kbd class="hidden font-mono text-[10px] opacity-70 sm:inline">Ctrl K</kbd>
+			</button>
+		</div>
+	</div>
+</header>

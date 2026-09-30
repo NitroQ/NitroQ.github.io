@@ -1,0 +1,17 @@
+---
+import PixelSprite from './PixelSprite.astro';
+
+interface Props {
+	label: string;
+	title?: string;
+	sprite?: string;
+}
+
+const { label, title, sprite = 'coin' } = Astro.props;
+---
+
+<div class="section-rule" data-reveal>
+	<PixelSprite name={sprite} size={20} class="shrink-0" data-twitch />
+	{title && <span class="eyebrow">{label}</span>}
+	<h2 class="display text-[clamp(1.1rem,3vw,1.5rem)] text-phos">{title ?? label}</h2>
+</div>

@@ -1,0 +1,32 @@
+---
+import { MARQUEE } from '../lib/site';
+
+interface Props {
+	tone?: 'dim' | 'amber';
+}
+
+const { tone = 'dim' } = Astro.props;
+// Duplicated once so the -50% translate loops seamlessly.
+const items = [...MARQUEE, ...MARQUEE];
+---
+
+<div
+	class="marquee border-y-2 border-line py-3 select-none"
+	aria-hidden="true"
+>
+	<div class="marquee__track">
+		{
+			items.map((item) => (
+				<span
+					class:list={[
+						'display text-[11px] tracking-[0.18em]',
+						tone === 'amber' ? 'text-amber' : 'text-dim',
+					]}
+				>
+					{item}
+					<span class="ml-8 text-line-2">■</span>
+				</span>
+			))
+		}
+	</div>
+</div>
