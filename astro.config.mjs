@@ -4,10 +4,11 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 const GH_USER = 'NitroQ';
-const REPO = process.env.SITE_REPO ?? 'personal-site';
+// The site is published from the user page repo, so it is served from the
+// domain root. Set SITE_REPO if you ever move it to a project repo — a project
+// repo is served from a sub-path and `base` has to carry the repo name.
+const REPO = process.env.SITE_REPO ?? `${GH_USER}.github.io`;
 
-// A user/organisation repo (NitroQ.github.io) is served from the domain root.
-// Every other repo is served from a sub-path, so `base` must carry the repo name.
 const base =
 	process.env.SITE_BASE ?? (REPO === `${GH_USER}.github.io` ? '/' : `/${REPO}/`);
 
