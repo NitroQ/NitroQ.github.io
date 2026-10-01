@@ -7,6 +7,13 @@ import '../styles/global.css';
 
 import { getCollection } from 'astro:content';
 import { SITE, withBase, type PaletteItem } from '../lib/site';
+import {
+	breadcrumbSchema,
+	crumbsFromPath,
+	personSchema,
+	websiteSchema,
+	type Crumb,
+} from '../lib/seo';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import BootOverlay from '../components/BootOverlay.astro';
@@ -15,9 +22,27 @@ import CommandPalette from '../components/CommandPalette.astro';
 interface Props {
 	title?: string;
 	description?: string;
+	/** `article` unlocks the published/modified time OG tags on blog posts. */
+	ogType?: 'website' | 'article';
+	publishedTime?: Date;
+	modifiedTime?: Date;
+	section?: string;
+	/** Extra nodes merged into the page's JSON-LD graph. */
+	schema?: Record<string, unknown>[];
+	/** Override the auto-derived breadcrumb trail. */
+	breadcrumbs?: Crumb[];
 }
 
-const { title, description = SITE.description } = Astro.props;
+const {
+	title,
+	description = SITE.description,
+	ogType = 'website',
+	publishedTime,
+	modifiedTime,
+	section,
+	schema = [],
+	breadcrumbs,
+} = Astro.props;
 
 const pageTitle = title
 	? `${title} // ${SITE.shortTitle}`
@@ -26,6 +51,7 @@ const pageTitle = title
 const canonical = Astro.site
 	? new URL(Astro.url.pathname, Astro.site)
 	: Astro.url;
+const origin = canonical.origin;
 
 const [projects, posts] = await Promise.all([
 	getCollection('projects'),
@@ -54,6 +80,20 @@ const palette: PaletteItem[] = [
 			meta: p.data.pubDate.getFullYear().toString(),
 		})),
 ];
+
+/**
+ * One JSON-LD graph per page: the person and the site are declared everywhere so
+ * every URL resolves them by @id instead of re-serialising the details.
+ */
+const trail: Crumb[] = breadcrumbs ?? crumbsFromPath(Astro.url.pathname, withBase('/'));
+const graph = [
+	personSchema(origin),
+	websiteSchema(origin),
+	...(trail.length ? [breadcrumbSchema(canonical.href, trail)] : []),
+	...schema,
+];
+
+const ogImage = new URL(withBase('/og.jpg'), Astro.site ?? Astro.url);
 ---
 
 <!doctype html>
@@ -68,6 +108,12 @@ const palette: PaletteItem[] = [
 		<meta name="theme-color" content="#06060b" />
 		<link rel="canonical" href={canonical} />
 
+		<!-- max-image-preview:large lets cards show the full OG image in previews. -->
+		<meta
+			name="robots"
+			content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+		/>
+
 		<link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
 		<link
 			rel="alternate"
@@ -76,16 +122,48 @@ const palette: PaletteItem[] = [
 			href={withBase('/rss.xml')}
 		/>
 
-		<meta property="og:type" content="website" />
+		<meta property="og:type" content={ogType} />
 		<meta property="og:site_name" content={SITE.shortTitle} />
 		<meta property="og:title" content={pageTitle} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonical} />
-		<meta
-			property="og:image"
-			content={new URL(withBase('/og.jpg'), Astro.site ?? Astro.url)}
-		/>
+		<meta property="og:locale" content="en_US" />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1832" />
+		<meta property="og:image:height" content="1832" />
+		<meta property="og:image:alt" content={`${SITE.title} — ${SITE.role}`} />
+
+		{
+			ogType === 'article' && publishedTime && (
+				<meta property="article:published_time" content={publishedTime.toISOString()} />
+			)
+		}
+		{
+			ogType === 'article' && modifiedTime && (
+				<meta property="article:modified_time" content={modifiedTime.toISOString()} />
+			)
+		}
+		{
+			ogType === 'article' && section && (
+				<meta property="article:section" content={section} />
+			)
+		}
+		{
+			ogType === 'article' && (
+				<meta property="article:author" content={SITE.title} />
+			)
+		}
+
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={pageTitle} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
+
+		<script
+			type="application/ld+json"
+			is:inline
+			set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })}
+		/>
 
 		<noscript>
 			<style>

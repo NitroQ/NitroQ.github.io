@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostRow from '../../components/PostRow.astro';
 import PixelSprite from '../../components/PixelSprite.astro';
 import { withBase } from '../../lib/site';
+import { blogPostingSchema } from '../../lib/seo';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -29,9 +30,32 @@ const date = data.pubDate.toLocaleDateString('en-GB', {
 
 /** ~200 words a minute, rounded up. */
 const minutes = Math.max(1, Math.round((post.body?.split(/\s+/).length ?? 0) / 200));
+const words = post.body?.split(/\s+/).filter(Boolean).length ?? 0;
 ---
 
-<BaseLayout title={data.title} description={data.description}>
+<BaseLayout
+	title={data.title}
+	description={data.description}
+	ogType="article"
+	publishedTime={data.pubDate}
+	modifiedTime={data.updatedDate ?? data.pubDate}
+	section="Notebook"
+	breadcrumbs={[
+		{ name: 'Home', href: withBase('/') },
+		{ name: 'Notebook', href: withBase('/blog/') },
+		{ name: data.title },
+	]}
+	schema={[
+		blogPostingSchema(Astro.url.href, {
+			title: data.title,
+			description: data.description,
+			pubDate: data.pubDate,
+			updatedDate: data.updatedDate,
+			tags: data.tags,
+			words,
+		}),
+	]}
+>
 	<article>
 		<header class="border-b-2 border-line bg-ink-2">
 			<div class="shell max-w-3xl py-14">

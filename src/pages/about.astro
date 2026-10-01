@@ -3,7 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import PixelSprite from '../components/PixelSprite.astro';
 import Marquee from '../components/Marquee.astro';
-import { SITE, SKILLS, TIMELINE, withBase } from '../lib/site';
+import { SITE, SKILLS, withBase } from '../lib/site';
+import { WORK } from '../lib/experience';
 ---
 
 <BaseLayout
@@ -25,25 +26,30 @@ import { SITE, SKILLS, TIMELINE, withBase } from '../lib/site';
 
 				<div class="lede mt-8 space-y-5" data-reveal data-enter>
 					<p>
-						I'm <strong class="text-phos">Frank Gesmundo</strong> — a full
-						stack mobile and web developer based in
-						{SITE.location}. I've been shipping software since 2017, and the
-						thing I keep coming back to is the same: build things that respect
-						the person using them.
-					</p>
-					<p>
-						Most of my recent work is <strong class="text-phos">local-first</strong>.
-						That means the data lives on your machine, the app works with the
-						wifi off, and there is no server holding a copy of your life. It's
-						a technical choice, but it's really a stance — if a product needs a
-						behavioural advertising company to stay solvent, it is not built
-						well.
-					</p>
-					<p>
-						Day to day that means Rust and Tauri for desktop, Laravel for
-						services, TypeScript everywhere else. Before that: Java, PHP,
-						Angular, and a lot of Swing.
-					</p>
+					I'm <strong class="text-phos">{SITE.fullName}</strong> — a full
+					stack web and mobile developer, UI/UX designer and IT
+					administrator based in {SITE.location}. I've been shipping
+					software since 2016, and the thing I keep coming back to is the
+					same: build things that respect the person using them.
+				</p>
+				<p>
+					My work sits across three layers that usually belong to three
+					people: the <strong class="text-phos">interface</strong>, the
+					<strong class="text-phos">application</strong>, and the
+					<strong class="text-phos">infrastructure</strong> under it. A
+					studio's network and servers, an intern's Laravel app in
+					production, a Flutter build, and the Figma file that decided how
+					any of it should look. I like being the person who does not have
+					to hand it off.
+				</p>
+				<p>
+					Day to day that means Laravel and PHP for the web, Flutter and
+					Java for mobile, and MySQL or MongoDB behind it. Before that:
+					ASP.NET MVC, Spring Boot, Angular, and a lot of Java Swing. The
+					constant is <strong class="text-phos">shipping</strong> — scoping
+					it, building it, documenting it, and handing it over so somebody
+					else can maintain it.
+				</p>
 				</div>
 			</div>
 
@@ -60,12 +66,16 @@ import { SITE, SKILLS, TIMELINE, withBase } from '../lib/site';
 						<dd class="text-right text-paper">{SITE.role}</dd>
 					</div>
 					<div class="flex justify-between gap-4 border-b-2 border-line pb-3">
+						<dt class="text-dim">ALSO</dt>
+						<dd class="text-right text-paper">{SITE.tags.join(' · ')}</dd>
+					</div>
+					<div class="flex justify-between gap-4 border-b-2 border-line pb-3">
 						<dt class="text-dim">BASED IN</dt>
 						<dd class="text-paper">{SITE.location}</dd>
 					</div>
 					<div class="flex justify-between gap-4 border-b-2 border-line pb-3">
 						<dt class="text-dim">SINCE</dt>
-						<dd class="text-paper">2017</dd>
+						<dd class="text-paper">2016</dd>
 					</div>
 					<div class="flex justify-between gap-4">
 						<dt class="text-dim">STATUS</dt>
@@ -95,22 +105,28 @@ import { SITE, SKILLS, TIMELINE, withBase } from '../lib/site';
 	</section>
 
 	<section class="shell py-20">
-		<SectionTitle label="History" sprite="chip" title="Chapters" />
+		<SectionTitle label="Career log" sprite="chip" title="Experience" />
 
 		<ol class="relative space-y-8 border-l-2 border-line pl-8" data-reveal-group>
 			{
-				TIMELINE.map((entry) => (
+				WORK.map((entry) => (
 					<li class="relative" data-reveal>
 						<span class="absolute top-2 -left-[41px] size-4 border-2 border-amber bg-ink" />
 						<p class="font-mono text-[11px] tracking-[0.12em] text-amber">
 							{entry.period}
 						</p>
-						<h3 class="display mt-2 text-lg text-paper">{entry.title}</h3>
-						<p class="muted mt-2 max-w-2xl leading-relaxed">{entry.body}</p>
+						<h3 class="display mt-2 text-lg text-paper">{entry.role}</h3>
+						<p class="mt-1 font-mono text-xs text-dim">{entry.org}</p>
+						<p class="muted mt-2 max-w-2xl leading-relaxed">{entry.summary}</p>
 					</li>
 				))
 			}
 		</ol>
+
+		<a href={withBase('/experience/')} class="btn btn-primary mt-10">
+			<PixelSprite name="coin" size={12} />
+			Full career log
+		</a>
 	</section>
 
 	<section class="border-y-2 border-line bg-ink-2 py-20">
@@ -145,20 +161,20 @@ import { SITE, SKILLS, TIMELINE, withBase } from '../lib/site';
 			{
 				[
 					{
-						sprite: 'bolt',
-						title: 'Finishing Bea',
-						body: 'Bea is the most ambitious thing I have built. Making local inference feel instant on ordinary hardware is the whole game.',
-					},
+					sprite: 'bolt',
+					title: 'Finishing things',
+					body: 'Fifteen projects, seven roles, two studios and a thesis. The pattern that keeps repeating is finishing — and documenting so the next person can pick it up.',
+				},
 					{
 						sprite: 'chip',
 						title: 'Writing more',
 						body: 'The notebook is new. Architecture notes, post-mortems, and the occasional strong opinion about developer experience.',
 					},
 					{
-						sprite: 'heart',
-						title: 'Available for work',
-						body: 'Open to full stack and desktop roles, and to projects that care about where the data lives.',
-					},
+			sprite: 'heart',
+			title: 'Available for work',
+			body: 'Open to full stack, mobile and UI/UX roles — and to projects that care about the person on the other side of the screen.',
+		},
 				].map((card) => (
 					<div class="panel p-6">
 						<PixelSprite name={card.sprite} size={24} data-twitch />

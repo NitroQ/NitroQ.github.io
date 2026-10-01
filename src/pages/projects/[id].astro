@@ -6,6 +6,7 @@ import PixelSprite from '../../components/PixelSprite.astro';
 import { ACCENTS } from '../../lib/accents';
 import { repoMeta } from '../../lib/github';
 import { withBase } from '../../lib/site';
+import { projectSchema } from '../../lib/seo';
 
 export async function getStaticPaths() {
 	const projects = await getCollection('projects');
@@ -36,7 +37,24 @@ const index = all.findIndex((p) => p.id === project.id);
 const next = all[(index + 1) % all.length];
 ---
 
-<BaseLayout title={data.title} description={data.summary}>
+<BaseLayout
+	title={data.title}
+	description={data.summary}
+	schema={[
+		projectSchema(Astro.url.href, {
+			title: data.title,
+			summary: data.summary,
+			repo: data.repo,
+			stack: data.stack,
+			year: data.year,
+		}),
+	]}
+	breadcrumbs={[
+		{ name: 'Home', href: withBase('/') },
+		{ name: 'Projects', href: withBase('/projects/') },
+		{ name: data.title },
+	]}
+>
 	<article>
 		<header class="border-b-2 border-line bg-ink-2">
 			<div class="shell py-14">
